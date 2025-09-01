@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { HomePage } from "../pages/homePage";
 import { LoginPage } from "../pages/loginPage";
 import { TestDataFactory } from "../src/utils/test-data-factory";
 
@@ -22,11 +23,15 @@ test.describe("LoginPage functionality", () => {
 	test("should show error message for invalid credentials", async ({
 		page,
 	}) => {
-		// Arrange - Setup page object and test data
+		// Arrange - Setup page objects and test data
+		const home = new HomePage(page);
 		const loginPage = new LoginPage(page);
 		const invalidCredentials = TestDataFactory.generateInvalidLoginData();
 
-		// Act - Attempt login with invalid credentials
+		// Act - Navigate to login and attempt invalid login
+		await home.goto();
+		await home.maybeValidateAndCloseWelcomePopup();
+		await home.clickLoginHeader();
 		await loginPage.login(
 			invalidCredentials.email,
 			invalidCredentials.password
